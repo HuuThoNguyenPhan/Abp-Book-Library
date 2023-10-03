@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using static Acme.BookLibrary.Web.Pages.CheckoutDetails.CreateModalModel;
-using static Acme.BookLibrary.Web.Pages.CheckoutDetails.IndexModel;
 
 namespace Acme.BookLibrary.Web.Pages.CheckoutDetails;
 
@@ -37,7 +35,7 @@ public class CreateModalModel : BookLibraryPageModel
     [BindProperty]
     public BookFind bookFind { get; set; } = new BookFind();
 
-    private readonly List<BookModalView> _bookModalViews;
+    private List<BookModalView> _bookModalViews;
     public IList<BookModalView> MyEntities { get; set; }
 
     public class BookFind
@@ -64,12 +62,14 @@ public class CreateModalModel : BookLibraryPageModel
 
     public async void OnPostAddRowAsync()
     {
-        var book1 = await _bookAppService.GetAsync(Guid.Parse(bookFind.Id));
-        var bookModalView = new BookModalView();
-        bookModalView.Id = bookFind.Id;
-        bookModalView.isReturned = "false";
-        bookModalView.ReturnDate = DateTime.Now.AddDays(14);
-        bookModalView.Name = book1.Name;
+        var book = await _bookAppService.GetAsync(Guid.Parse(bookFind.Id));
+        var bookModalView = new BookModalView
+        {
+            Id = bookFind.Id,
+            Name = book.Name,
+            IsReturned = "false",
+            ReturnDate = DateTime.Now.AddDays(14)
+        };
         _bookModalViews.Add(bookModalView);
     }
 
@@ -99,7 +99,7 @@ public class CreateModalModel : BookLibraryPageModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string isReturned { get; set; }
+        public string IsReturned { get; set; }
         public DateTime ReturnDate { get; set; }
     }
 

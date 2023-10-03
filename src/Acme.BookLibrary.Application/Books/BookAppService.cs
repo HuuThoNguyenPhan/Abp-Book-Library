@@ -116,32 +116,35 @@ public class BookAppService : BookLibraryAppService, IBookAppService
         }
     }
 
-    public async Task ChangeStatusAsync(Guid id, Guid IdCheckout)
+    public async Task ChangeStatusAsync(Guid BookId, Guid IdCheckout)
     {
-        var book = await _bookRepository.GetAsync(id);
+        var book = await _bookRepository.GetAsync(BookId);
+        if (book == null)
+        {
+            return;
+        }
         if (book.IsBorrowed == false)
         {
             book.Quantity -= 1;
+            book.IsBorrowed = !book.IsBorrowed;
+
+            await _bookRepository.UpdateAsync(book);
         }
         else
         {
             book.Quantity += 1;
+            book.IsBorrowed = !book.IsBorrowed;
+
+            await _bookRepository.UpdateAsync(book);
             var check = await CheckFinished(IdCheckout);
             if (check == true)
             {
-                await UpdateStatus(IdCheckout, check);
+                var checkout = await _checkoutRepository.GetAsync(IdCheckout);
+                checkout.IsFinished = true;
+                await _checkoutRepository.UpdateAsync(checkout);
             }
         }
-        book.IsBorrowed = !book.IsBorrowed;
 
-        await _bookRepository.UpdateAsync(book);
-    }
-
-    public async Task UpdateStatus(Guid id, bool finish)
-    {
-        var checkout = await _checkoutRepository.GetAsync(id);
-        checkout.IsFinished = finish;
-        await _checkoutRepository.UpdateAsync(checkout);
     }
 
     public async Task<bool> CheckFinished(Guid IdCheckout)

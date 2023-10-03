@@ -8,9 +8,8 @@ namespace Acme.BookLibrary.Checkouts;
 
 public class CheckoutDto : FullAuditedEntityDto<Guid>
 {
-    public Guid CheckOutReturn { get; set; }
     public Guid CardId { get; set; }
     public long Deposit { get; set; }
     public bool IsFinished { get; set; }
-    public List<CreateUpdateCheckoutDetailDto> createUpdateCheckoutDetailDtos { get; set; }
+    public List<CreateUpdateCheckoutDetailDto> CheckoutDetails { get; set; }
 }

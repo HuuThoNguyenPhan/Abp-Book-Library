@@ -69,7 +69,7 @@
                 <form method="post">
                     <div class="input-group">
                         <input asp-for="@Model.bookFind.Id" type="search" class="form-control shadow-none" placeholder="Id Book ..." aria-label="Recipient's username" aria-describedby="basic-addon2">
-                        <button type="submit" name="AddRow" class="btn btn-primary" asp-page-handler="AddRow">Search</button>
+                        <button type="submit" name="AddRow" class="btn btn-primary" asp-page-handler="AddRow">Add</button>
                     </div>
                 </form>
             </abp-column>
@@ -100,7 +100,7 @@
                                 <td>Delete</td>
                                 <th scope="Row">@i.Id</th>
                                 <td>@i.Name</td>
-                                <td>@i.isReturned</td>
+                                <td>@i.IsReturned</td>
                                 <td>@i.ReturnDate</td>
                             </tr>
                         }

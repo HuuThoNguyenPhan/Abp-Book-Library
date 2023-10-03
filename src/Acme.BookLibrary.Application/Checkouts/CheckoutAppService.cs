@@ -14,23 +14,23 @@ public class CheckoutAppService : BookLibraryAppService, ICheckoutAppService
 {
     private readonly ICheckoutRepository _checkoutRepository;
     private readonly CheckoutDetailAppService _checkoutDetailAppService;
-    private readonly ICheckoutDetailRepository _checkoutDetailRepository;
-    private readonly IBookAppService _bookAppService;
 
-    public CheckoutAppService(ICheckoutRepository checkoutRepository, CheckoutDetailAppService checkoutDetailAppService, ICheckoutDetailRepository checkoutDetailRepository, IBookAppService bookAppService)
+    public CheckoutAppService(ICheckoutRepository checkoutRepository, CheckoutDetailAppService checkoutDetailAppService)
     {
         _checkoutRepository = checkoutRepository;
         _checkoutDetailAppService = checkoutDetailAppService;
-        _checkoutDetailRepository = checkoutDetailRepository;
-        _bookAppService = bookAppService;
     }
 
     public async Task<CheckoutDto> CreateAsync(CreateUpdateCheckoutDto input)
     {
         var checkout = new Checkout(GuidGenerator.Create(), input.CardId, input.Deposit, input.IsFinished);
-        // Chỉ tạo phiếu trả cho phiếu mượn
         // Kiểm tra đã trả hết sách chưa, nếu rồi thì cho mượn típ
         await _checkoutRepository.InsertAsync(checkout);
+        if (input.CheckoutDetails.Count > 3)
+        {
+            return null;
+        }
+
         foreach (var item in input.CheckoutDetails)
         {
             item.CheckoutId = checkout.Id;
@@ -57,17 +57,9 @@ public class CheckoutAppService : BookLibraryAppService, ICheckoutAppService
             input.Sorting = nameof(Author.Name);
         }*/
 
-        var checkouts = await _checkoutRepository.GetListAsync(
-            input.SkipCount,
-            input.MaxResultCount,
-            input.Sorting,
-            input.Filter
-        );
+        var checkouts = await _checkoutRepository.GetListAsync();
 
         var totalCount = await _checkoutRepository.CountAsync();
-        /*            ? await _checkoutRepository.CountAsync()
-                    : await _checkoutRepository.CountAsync(
-                        c => c..Contains(input.Filter));*/
 
         return new PagedResultDto<CheckoutDto>(
             totalCount,
