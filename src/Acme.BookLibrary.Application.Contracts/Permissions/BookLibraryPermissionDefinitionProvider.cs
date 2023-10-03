@@ -1,0 +1,20 @@
+﻿using Acme.BookLibrary.Localization;
+using Volo.Abp.Authorization.Permissions;
+using Volo.Abp.Localization;
+
+namespace Acme.BookLibrary.Permissions;
+
+public class BookLibraryPermissionDefinitionProvider : PermissionDefinitionProvider
+{
+    public override void Define(IPermissionDefinitionContext context)
+    {
+        var myGroup = context.AddGroup(BookLibraryPermissions.GroupName);
+        //Define your own permissions here. Example:
+        //myGroup.AddPermission(BookLibraryPermissions.MyPermission1, L("Permission:MyPermission1"));
+    }
+
+    private static LocalizableString L(string name)
+    {
+        return LocalizableString.Create<BookLibraryResource>(name);
+    }
+}

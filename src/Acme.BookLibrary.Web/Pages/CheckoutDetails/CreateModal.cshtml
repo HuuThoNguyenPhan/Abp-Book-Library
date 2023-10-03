@@ -1,0 +1,23 @@
+﻿@page
+@using Acme.BookLibrary.Localization
+@using Acme.BookLibrary.Web.Pages.CheckoutDetails
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model CreateModalModel
+@inject IStringLocalizer<BookLibraryResource> L
+@{
+    Layout = null;
+}
+<abp-dynamic-form abp-model="bookFind" asp-page="/CheckoutDetails/CreateModal">
+    <abp-modal>
+        <abp-modal-header title="@L["Add Book"].Value"></abp-modal-header>
+        <form method="post">
+            <abp-modal-body>
+                <abp-form-content />
+            </abp-modal-body>
+            <abp-modal-footer>
+                <button type="submit" class="btn btn-primary" name="Addrow">Add</button>
+            </abp-modal-footer>
+        </form>
+    </abp-modal>
+</abp-dynamic-form>

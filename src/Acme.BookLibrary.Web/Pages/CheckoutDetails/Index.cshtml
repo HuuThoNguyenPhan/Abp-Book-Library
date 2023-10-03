@@ -1,0 +1,112 @@
+﻿@page
+@using Acme.BookLibrary.Localization
+@using Acme.BookLibrary.Web.Pages.CheckoutDetails
+@using Microsoft.Extensions.Localization;
+@model CreateModalModel
+@inject IStringLocalizer<BookLibraryResource> L
+@section scripts
+{
+    <abp-script src="/Pages/CheckoutDetails/Index.js" />
+}
+
+<abp-card>
+    <abp-card-header>
+        <abp-row>
+            <abp-column size-md="_3">
+                <abp-card-title>@L["Information"]</abp-card-title>
+            </abp-column>
+            
+                <abp-column size-md="_6" class="text-end">
+
+                    <form method="post">
+                    <div class="input-group">
+                        <input asp-for="@Model.Input.Keyword" type="search" class="form-control shadow-none" placeholder="Id Member Card ..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <button type="submit" name="getInfo" class="btn btn-primary" asp-page-handler="GetInfo">Search</button>
+                    </div>
+                    </form>
+
+                </abp-column>
+           
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body>
+        <abp-row>
+            <abp-column>
+                <abp-input class="shadow-none" asp-for="@Model.MemberCard" value="@DateTime.Now" label="Creation Time" readonly="true" placeholder="name@example.com" />
+            </abp-column>
+            <abp-column>
+                <abp-input class="shadow-none" asp-for="@Model.MemberCard.Id" label="Card Id" readonly="true" placeholder="Card Id ... " />
+            </abp-column>
+            <abp-column>
+                <abp-input class="shadow-none" asp-for="@Model.MemberCard.Name" label="Name" readonly="true" placeholder="Member name ... " />
+            </abp-column>
+            <abp-column>
+                <abp-input class="shadow-none" asp-for="@Model.MemberCard.ExpDate" label="Exp Date" readonly="true" placeholder="Exp Date ... " />
+            </abp-column>
+        </abp-row>
+        <abp-row>
+            <abp-column>
+                <abp-input class="shadow-none" asp-for="@Model.MemberCard.Phone" label="Phone" readonly="true" placeholder="Phone number" />
+            </abp-column>
+            <abp-column>
+                <abp-input class="shadow-none" asp-for="@Model.MemberCard.Email" label="Email" readonly="true" placeholder="Ex@gmail.com " />
+            </abp-column>
+            <abp-column>
+                <abp-input class="shadow-none" asp-for="@Model.MemberCard.Address" label="Address" readonly="true" placeholder="Address ... " />
+            </abp-column>
+        </abp-row>
+        
+        
+    </abp-card-body>
+</abp-card>
+<abp-card>
+    <abp-card-header>
+        <abp-row>
+            <abp-column size-md="_6">
+                <abp-card-title>@L["Books"]</abp-card-title>
+            </abp-column>
+            <abp-column size-md="_6" class="text-end">
+                <form method="post">
+                    <div class="input-group">
+                        <input asp-for="@Model.bookFind.Id" type="search" class="form-control shadow-none" placeholder="Id Book ..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <button type="submit" name="AddRow" class="btn btn-primary" asp-page-handler="AddRow">Search</button>
+                    </div>
+                </form>
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body>
+        <abp-table small="true" striped-rows="true" border-style="Bordered">
+            <thead Theme="Dark">
+                <tr>
+                    <th scope="Column">Action</th>
+                    <th scope="Column">Id</th>
+                    <th scope="Column">Name</th>
+                    <th scope="Column">IsReturned</th>
+                    <th scope="Column">Return Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    if (Model.MyEntities == null)
+                    {
+                        <tr>Data is Emty</tr>
+                    }
+                    else
+                    {
+                        foreach (var i in Model.MyEntities)
+                        {
+                            <tr>
+                                <td>Delete</td>
+                                <th scope="Row">@i.Id</th>
+                                <td>@i.Name</td>
+                                <td>@i.isReturned</td>
+                                <td>@i.ReturnDate</td>
+                            </tr>
+                        }
+                    }   
+                }
+            </tbody>
+        </abp-table>
+    </abp-card-body>
+</abp-card>
