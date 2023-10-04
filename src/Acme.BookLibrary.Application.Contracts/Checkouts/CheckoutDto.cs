@@ -11,5 +11,5 @@ public class CheckoutDto : FullAuditedEntityDto<Guid>
     public Guid CardId { get; set; }
     public long Deposit { get; set; }
     public bool IsFinished { get; set; }
-    public List<CreateUpdateCheckoutDetailDto> CheckoutDetails { get; set; }
+    public List<CheckoutDetailDto> CheckoutDetails { get; set; }
 }

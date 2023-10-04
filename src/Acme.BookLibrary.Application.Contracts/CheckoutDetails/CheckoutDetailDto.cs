@@ -11,4 +11,5 @@ public class CheckoutDetailDto : FullAuditedEntityDto<Guid>
     public DateTime ReturnDate { get; set; }
     public Guid BookId { get; set; }
     public string BookName { get; set; }
+    public bool IsBorrowed { get; set; }
 }

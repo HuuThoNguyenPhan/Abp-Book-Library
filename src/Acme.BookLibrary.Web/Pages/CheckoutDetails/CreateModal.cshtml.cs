@@ -1,7 +1,9 @@
 using Acme.BookLibrary.Books;
 using Acme.BookLibrary.CheckoutDetails;
 using Acme.BookLibrary.MemberCards;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +12,10 @@ namespace Acme.BookLibrary.Web.Pages.CheckoutDetails;
 
 public class CreateModalModel : BookLibraryPageModel
 {
+    private readonly IJSRuntime _jsRuntime;
     private readonly MemberCardAppService _memberCardAppService;
+
+    public List<BookModalView> bookModalViews { get; set; }
 
     [BindProperty]
     public SearchProductInput Input { get; set; } = new SearchProductInput();
@@ -20,23 +25,18 @@ public class CreateModalModel : BookLibraryPageModel
 
     private readonly BookAppService _bookAppService;
 
-    public CreateModalModel(BookAppService bookAppService, MemberCardAppService memberCardAppService)
+    public CreateModalModel(BookAppService bookAppService, MemberCardAppService memberCardAppService, IJSRuntime jsRuntime)
     {
         _memberCardAppService = memberCardAppService;
+        _jsRuntime = jsRuntime;
         _bookAppService = bookAppService;
-        _bookModalViews = new List<BookModalView>();
     }
 
     [BindProperty]
     public CreateUpdateCheckoutDetailDto CheckoutDetail { get; set; }
 
-    public BookModalView bookModalView { get; set; }
-
     [BindProperty]
     public BookFind bookFind { get; set; } = new BookFind();
-
-    private List<BookModalView> _bookModalViews;
-    public IList<BookModalView> MyEntities { get; set; }
 
     public class BookFind
     {
@@ -47,7 +47,7 @@ public class CreateModalModel : BookLibraryPageModel
     public void OnGet()
     {
         CheckoutDetail = new CreateUpdateCheckoutDetailDto();
-        MyEntities = _bookModalViews;
+        bookModalViews = new List<BookModalView>();
     }
 
     public async void OnPostGetInfoAsync()
@@ -62,15 +62,35 @@ public class CreateModalModel : BookLibraryPageModel
 
     public async void OnPostAddRowAsync()
     {
-        var book = await _bookAppService.GetAsync(Guid.Parse(bookFind.Id));
-        var bookModalView = new BookModalView
+        Guid guid;
+        bool isGuidValid = Guid.TryParse(bookFind.Id, out guid);
+
+        if (isGuidValid)
         {
-            Id = bookFind.Id,
-            Name = book.Name,
-            IsReturned = "false",
-            ReturnDate = DateTime.Now.AddDays(14)
-        };
-        _bookModalViews.Add(bookModalView);
+            var book = await _bookAppService.GetAsync(Guid.Parse(bookFind.Id));
+            if (book == null)
+            {
+                return;
+            }
+            else
+            {
+                bookModalViews = bookModalViews ?? new List<BookModalView>();
+
+                var bookModalView = new BookModalView
+                {
+                    Id = bookFind.Id,
+                    Name = book.Name,
+                    IsReturned = "false",
+                    ReturnDate = DateTime.Now.AddDays(14)
+                };
+                bookModalViews.Add(bookModalView);
+            }
+        }
+        else
+        {
+            return;
+        }
+        
     }
 
     public class CreateModalModelView

@@ -88,17 +88,17 @@
             </thead>
             <tbody>
                 @{
-                    if (Model.MyEntities == null)
+                    if (Model.bookModalViews == null)
                     {
                         <tr>Data is Emty</tr>
                     }
                     else
                     {
-                        foreach (var i in Model.MyEntities)
+                        foreach (var i in Model.bookModalViews)
                         {
                             <tr>
                                 <td>Delete</td>
-                                <th scope="Row">@i.Id</th>
+                                <th>@i.Id</th>
                                 <td>@i.Name</td>
                                 <td>@i.IsReturned</td>
                                 <td>@i.ReturnDate</td>

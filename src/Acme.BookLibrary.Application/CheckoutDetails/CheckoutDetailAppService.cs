@@ -31,7 +31,7 @@ public class CheckoutDetailAppService : BookLibraryAppService, ICheckoutDetailSe
 
         var book = await _bookAppService.GetAsync(input.BookId);
 
-        await _bookAppService.ChangeStatusAsync(book.Id, input.CheckoutId);
+        await _bookAppService.BorrowBookAsync(book.Id);
         await _checkoutDetailRepository.InsertAsync(checkoutDetail);
         return ObjectMapper.Map<CheckoutDetail, CheckoutDetailDto>(checkoutDetail);
     }
